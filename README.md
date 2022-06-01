@@ -66,7 +66,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -93,8 +92,6 @@ The project doesn't uses any third-party libraries, and is built with the follow
   - `github.com/spf13/cobra`
   - `golang.org/x/oauth2`
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
@@ -102,7 +99,6 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 - [Go](https://golang.org/)
 - [GitHub-API](https://developer.github.com/v3/)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
@@ -194,7 +190,6 @@ Here are some things you need to do before you can get started.
    }
    ```
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
@@ -225,7 +220,6 @@ Don't forget to give the project a star! Thanks again!
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
 
@@ -235,7 +229,6 @@ Your Name - [@GoelBhavya](https://twitter.com/GoelBhavya) - bgoel4132@gmail.com
 
 Project Link: [github.com/dyte-submissions/dyte-vit-2022-bhavyagoel](https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 
