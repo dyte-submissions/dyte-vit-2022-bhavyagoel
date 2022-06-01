@@ -2,6 +2,7 @@
 Copyright © 2022 NAME HERE bgoel4132@gmail.com
 
 */
+
 package cmd
 
 import (
@@ -41,6 +42,19 @@ var rootCmd = &cobra.Command{
 		depmgmt -c ./config.json -i ./dependencies.csv -v @latest -u 
 		`,
 	Run: func(cmd *cobra.Command, args []string) {
+		/*
+			This is the main function which is called when the command is executed.
+			FUNCTIONALITY:
+				1. Read the CSV file and create a list of repositories
+				2. Read the package.json file for each repository and create a map
+				3. Check if the dependencies are matching with the CSV file
+				4. If not matching update the dependencies
+				5. Create a PR for the same
+				6. If the PR is created successfully, update the CSV file with the new version
+				7. If the PR is not created successfully, print the error message
+		*/
+
+		// Read all the flags and store them in variables
 		input, _ := cmd.Flags().GetString("input")
 		versionCheck, _ := cmd.Flags().GetString("version")
 		update, _ := cmd.Flags().GetBool("update")
@@ -49,23 +63,30 @@ var rootCmd = &cobra.Command{
 		fileType := input[strings.LastIndex(input, ".")+1:]
 		var res []repo
 		if fileType == "csv" {
-			var data = readCSVfile(input)
+			// Read the CSV file and create a list of repositories
+			data := readCSVfile(input)
 			for _, d := range data {
-				var url = d.URL
-				var repoName = url[strings.LastIndex(url, "/")+1:]
-				var userURL = url[:strings.LastIndex(url, "/")]
-				var userName = userURL[strings.LastIndex(userURL, "/")+1:]
-				var packageJSONMap = packageJSONMap(url, config)
-				var dependencies = packageJSONMap["dependencies"]
-				var depCheckVersion = versionCheck[strings.LastIndex(versionCheck, "@")+1:]
-				var depCheckName = versionCheck[:strings.LastIndex(versionCheck, "@")]
+				// Read the package.json file for each repository and create a map of the data
+				url := d.URL
+				repoName := url[strings.LastIndex(url, "/")+1:]
+				userURL := url[:strings.LastIndex(url, "/")]
+				userName := userURL[strings.LastIndex(userURL, "/")+1:]
+
+				// Check if the dependencies are matching with the CSV file
+				dependencies := packageJSONMap(url, config)["dependencies"]
+				depCheckVersion := versionCheck[strings.LastIndex(versionCheck, "@")+1:]
+				depCheckName := versionCheck[:strings.LastIndex(versionCheck, "@")]
 
 				if _, ok := dependencies.(map[string]interface{})[depCheckName]; ok {
-					var currVersion = dependencies.(map[string]interface{})[depCheckName].(string)
+					// If the dependency is present in the package.json file, check if the version is matching
+					currVersion := dependencies.(map[string]interface{})[depCheckName].(string)
 					currVersion = strings.Replace(currVersion, "^", "", -1)
+
 					d.version = currVersion
 					d.Name = repoName
+
 					if currVersion != depCheckVersion {
+						// If the version is not matching, update the dependency in the package.json file and create a PR for the same
 						fmt.Println("\n" + d.Name + ": " + currVersion + " is not the latest version. Please update it to " + depCheckVersion)
 						if update {
 							prURL := updateDep(url, userName, repoName, depCheckName, depCheckVersion, config)
@@ -85,6 +106,7 @@ var rootCmd = &cobra.Command{
 
 			}
 
+			// Print the results in a table
 			tw := table.NewWriter()
 			if update {
 				tw.AppendHeader(table.Row{"Name", "Version", "Version Satisfied", "Update PR"})
@@ -109,8 +131,6 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -119,9 +139,19 @@ func Execute() {
 }
 
 func updateDep(url string, userName string, repoName string, depName string, depVersion string, configPath string) string {
+	/*
+		This function is used to update the dependency in the package.json file and create a PR for the same.
+		FUNCTIONALITY:
+			1. Read the package.json file
+			2. Update the dependency in the package.json file
+			3. Create a PR for the same
+			4. If the PR is created successfully, update the CSV file with the new version
+			5. If the PR is not created successfully, print the error message
+	*/
+
 	ctx := context.Background()
-	var configJSON = readConfigJSON(configPath)
-	var auth_token = fmt.Sprint(configJSON["AUTH_TOKEN"])
+	configJSON := readConfigJSON(configPath)
+	auth_token := fmt.Sprint(configJSON["AUTH_TOKEN"])
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: auth_token},
@@ -130,10 +160,10 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 	client := github.NewClient(tc)
 
 	tokenUser := fmt.Sprint(configJSON["TOKEN_USER"])
-	// Check if repoName exists in tokenUser account
-	repos, _, _ := client.Repositories.Get(ctx, tokenUser, repoName)
 
-	if repos.GetName() != repoName {
+	// Check if the Authorised user has the permission to update the dependency in the package.json file else create a new Fork
+	repo, _, _ := client.Repositories.Get(ctx, tokenUser, repoName)
+	if repo.GetName() != repoName {
 		fork := &github.RepositoryCreateForkOptions{}
 		fmt.Println("Please wait while we fork the repo")
 		client.Repositories.CreateFork(ctx, userName, repoName, fork)
@@ -141,6 +171,7 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 		fmt.Println("Forked the repo successfully.")
 	}
 
+	// In the fork repo, update the dependency in the package.json file and create a PR for the same
 	userName = tokenUser
 	repo, _, err := client.Repositories.Get(ctx, userName, repoName)
 
@@ -148,17 +179,19 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 		log.Fatal(err)
 	}
 
-	var branch = repo.GetDefaultBranch()
-	var repoURL = repo.GetHTMLURL()
+	branch := repo.GetDefaultBranch()
+	repoURL := repo.GetHTMLURL()
 
-	var data = packageJSONMap(repoURL, configPath)
+	data := packageJSONMap(repoURL, configPath)
 	data["dependencies"].(map[string]interface{})[depName] = "^" + depVersion
-	var jsonData, _ = json.Marshal(data)
-	var fileContent, _, _, err1 = client.Repositories.GetContents(ctx, userName, repoName, "package.json", nil)
-	if err1 != nil {
+	jsonData, _ := json.Marshal(data)
+	fileContent, _, _, err := client.Repositories.GetContents(ctx, userName, repoName, "package.json", nil)
+	if err != nil {
 		log.Fatal(err)
 	}
-	var commitMsg = "Update dependencies " + depName + " to " + depVersion
+
+	// Create a PR for the updated dependency
+	commitMsg := "Update dependencies " + depName + " to " + depVersion
 	file := &github.RepositoryContentFileOptions{
 		Branch:  github.String(branch),
 		Message: github.String(commitMsg),
@@ -185,16 +218,17 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 		parentName = parentRepo.GetOwner().GetLogin()
 	}
 
-	var prCheckURL = "https://api.github.com/repos/" + parentName + "/" + repoName + "/pulls?base=" + parentBranch + "&head=" + userName + ":" + branch
-	var prURLResponse, _ = http.Get(prCheckURL)
-	var prURLBody, _ = ioutil.ReadAll(prURLResponse.Body)
+	// Check if PR already exists for the updated dependency, if yes, update the PR else create a new PR for the updated dependency
+	prCheckURL := "https://api.github.com/repos/" + parentName + "/" + repoName + "/pulls?base=" + parentBranch + "&head=" + userName + ":" + branch
+	prURLResponse, _ := http.Get(prCheckURL)
+	prURLBody, _ := ioutil.ReadAll(prURLResponse.Body)
 
 	if string(prURLBody) != "[]" {
 		fmt.Println("Pull request already exists")
-		var content = bytes.NewBuffer(prURLBody)
+		content := bytes.NewBuffer(prURLBody)
 		var prObj interface{}
 		json.NewDecoder(content).Decode(&prObj)
-		var prURL = fmt.Sprint(prObj.([]interface{})[0].(map[string]interface{})["html_url"])
+		prURL := fmt.Sprint(prObj.([]interface{})[0].(map[string]interface{})["html_url"])
 		return prURL
 	} else {
 		newPr := &github.NewPullRequest{
@@ -216,9 +250,15 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 }
 
 func packageJSONMap(URL string, configPath string) map[string]interface{} {
+	/*
+		This function is used to read the package.json file and return the map of the file
+		FUNCTIONALITY:
+			1. Read the package.json file
+			2. Return the map of the file
+	*/
 	ctx := context.Background()
-	var configJSON = readConfigJSON(configPath)
-	var auth_token = fmt.Sprint(configJSON["AUTH_TOKEN"])
+	configJSON := readConfigJSON(configPath)
+	auth_token := fmt.Sprint(configJSON["AUTH_TOKEN"])
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: auth_token},
@@ -226,16 +266,16 @@ func packageJSONMap(URL string, configPath string) map[string]interface{} {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	var repoName = URL[strings.LastIndex(URL, "/")+1:]
-	var userName = URL[:strings.LastIndex(URL, "/")]
+	repoName := URL[strings.LastIndex(URL, "/")+1:]
+	userName := URL[:strings.LastIndex(URL, "/")]
 	userName = userName[strings.LastIndex(userName, "/")+1:]
 
-	var fileContent, _, _, err = client.Repositories.GetContents(ctx, userName, repoName, "package.json", nil)
+	fileContent, _, _, err := client.Repositories.GetContents(ctx, userName, repoName, "package.json", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var content, _ = fileContent.GetContent()
+	content, _ := fileContent.GetContent()
 
 	var data map[string]interface{}
 	json.Unmarshal([]byte(content), &data)
