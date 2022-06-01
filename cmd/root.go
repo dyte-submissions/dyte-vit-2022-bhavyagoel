@@ -28,14 +28,23 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "depmgmt",
 	Short: "CLI to manage your node dependencies, update them, and create a PR.",
-	Long: `It is a CLI utility, which uses a CSV file to check for Node dependencies, and if not matching update them, finally creating a PR for the same. For example:
+	Long: `
+	It is a CLI utility, which uses a CSV file to check for 
+	Node dependencies, and if not matching update them, finally 
+	creating a PR for the same. A config.json file needs to be present 
+	in the directory for proper functionality of the tool. Else use -c 
+	to pass the configuration file path (needs to be JSON format). 
+	
+	For example:
 
 		depmgmt --input=./dependencies.csv --version=@latest --update
+		depmgmt -c ./config.json -i ./dependencies.csv -v @latest -u 
 		`,
 	Run: func(cmd *cobra.Command, args []string) {
 		input, _ := cmd.Flags().GetString("input")
 		versionCheck, _ := cmd.Flags().GetString("version")
 		update, _ := cmd.Flags().GetBool("update")
+		config, _ := cmd.Flags().GetString("config")
 
 		fileType := input[strings.LastIndex(input, ".")+1:]
 		var res []repo
@@ -46,8 +55,7 @@ var rootCmd = &cobra.Command{
 				var repoName = url[strings.LastIndex(url, "/")+1:]
 				var userURL = url[:strings.LastIndex(url, "/")]
 				var userName = userURL[strings.LastIndex(userURL, "/")+1:]
-
-				var packageJSONMap = packageJSONMap(url)
+				var packageJSONMap = packageJSONMap(url, config)
 				var dependencies = packageJSONMap["dependencies"]
 				var depCheckVersion = versionCheck[strings.LastIndex(versionCheck, "@")+1:]
 				var depCheckName = versionCheck[:strings.LastIndex(versionCheck, "@")]
@@ -60,7 +68,7 @@ var rootCmd = &cobra.Command{
 					if currVersion != depCheckVersion {
 						fmt.Println("\n" + d.Name + ": " + currVersion + " is not the latest version. Please update it to " + depCheckVersion)
 						if update {
-							prURL := updateDep(url, userName, repoName, depCheckName, depCheckVersion)
+							prURL := updateDep(url, userName, repoName, depCheckName, depCheckVersion, config)
 							d.update_pr = prURL
 						}
 					} else {
@@ -110,9 +118,9 @@ func Execute() {
 	}
 }
 
-func updateDep(url string, userName string, repoName string, depName string, depVersion string) string {
+func updateDep(url string, userName string, repoName string, depName string, depVersion string, configPath string) string {
 	ctx := context.Background()
-	var configJSON = readConfigJSON()
+	var configJSON = readConfigJSON(configPath)
 	var auth_token = fmt.Sprint(configJSON["AUTH_TOKEN"])
 
 	ts := oauth2.StaticTokenSource(
@@ -143,7 +151,7 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 	var branch = repo.GetDefaultBranch()
 	var repoURL = repo.GetHTMLURL()
 
-	var data = packageJSONMap(repoURL)
+	var data = packageJSONMap(repoURL, configPath)
 	data["dependencies"].(map[string]interface{})[depName] = "^" + depVersion
 	var jsonData, _ = json.Marshal(data)
 	var fileContent, _, _, err1 = client.Repositories.GetContents(ctx, userName, repoName, "package.json", nil)
@@ -207,9 +215,9 @@ func updateDep(url string, userName string, repoName string, depName string, dep
 	}
 }
 
-func packageJSONMap(URL string) map[string]interface{} {
+func packageJSONMap(URL string, configPath string) map[string]interface{} {
 	ctx := context.Background()
-	var configJSON = readConfigJSON()
+	var configJSON = readConfigJSON(configPath)
 	var auth_token = fmt.Sprint(configJSON["AUTH_TOKEN"])
 
 	ts := oauth2.StaticTokenSource(
@@ -233,8 +241,8 @@ func packageJSONMap(URL string) map[string]interface{} {
 	json.Unmarshal([]byte(content), &data)
 	return data
 }
-func readConfigJSON() map[string]interface{} {
-	config, err := ioutil.ReadFile("config.json")
+func readConfigJSON(configPath string) map[string]interface{} {
+	config, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -283,4 +291,5 @@ func init() {
 	rootCmd.Flags().StringP("input", "i", "", "input file")
 	rootCmd.Flags().StringP("version", "v", "", "version")
 	rootCmd.Flags().BoolP("update", "u", false, "update")
+	rootCmd.Flags().StringP("config", "c", "config.json", "config file")
 }
