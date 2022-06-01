@@ -240,15 +240,15 @@ Project Link: [github.com/dyte-submissions/dyte-vit-2022-bhavyagoel](https://git
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
 [contributors-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
 [forks-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
 [stars-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
 [issues-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
 [license-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/bgoel4132
