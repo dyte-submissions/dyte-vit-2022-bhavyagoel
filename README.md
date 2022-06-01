@@ -1,4 +1,5 @@
 [![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-c66648af7eb3fe8bc4f294546bfd86ef473780cde1dea487d3c4ff354943c9ae.svg)](https://classroom.github.com/online_ide?assignment_repo_id=7942334&assignment_repo_type=AssignmentRepo)
+
 <div id="top"></div>
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
@@ -8,8 +9,6 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -18,6 +17,7 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -25,32 +25,28 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h1 align="center">depmgmt</h1>
 
   <p align="center">
-    project_description
+    A CLI tool for managing your dependencies.
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -70,7 +66,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -78,94 +73,132 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+A CLI tool for managing your dependencies, updating them, and creating PRs. This is built as the submission of the Dyte Hiring Challenge. 
+The project doesn't uses any third-party libraries, and is built with the following `go` packages:
+  - `bufio`
+  - `bytes`
+  - `context`
+  - `encoding/csv`
+  - `encoding/json`
+  - `fmt`
+  - `log`
+  - `net/http`
+  - `os`
+  - `github.com/google/go-github/v45/github`
+  - `github.com/jedib0t/go-pretty/table`
+  - `github.com/spf13/cobra`
+  - `golang.org/x/oauth2`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
+- [Go](https://golang.org/)
+- [GitHub-API](https://developer.github.com/v3/)
 
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+`depmgmt` is a simple, yet powerful command line tool for managing your dependencies. It checks for outdated dependencies, and if they are outdated, it will update them for you. It will also create a ``fork` of the repo if you don't have one, finally it will also create a pull request for you. If a pull request already exists, it will update it.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+- [Go](https://golang.org/)
+- [Git](https://git-scm.com/)
+- [GitHub-API](https://developer.github.com/v3/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+Install `depmgmt` with `go`:
+
+```bash
+go install github.com/dyte-submissions/dyte-vit-2022-bhavyagoel
+```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### Usage
+
+`depmgmt` is a command line tool for managing your dependencies. It checks for dependencies you have installed, and if they are not installed, it will install them for you. You can also check for outdated dependencies, and if they are outdated, it will update them for you.
+
+<br>
+
+Help information:
+
+```bash
+$ depmgmt -h
+```
+![Help](images/help.png)
+
+
+Check for outdated dependencies:
+
+```bash
+$ depmgmt -c path_to_config -i path_to_csv -v name@version
+```
+![Check for outdated dependencies](images/check.png)
+
+Update dependencies and create a pull request:
+
+```bash
+$ depmgmt -c path_to_config -i path_to_csv -v name@version -u
+```
+![Update dependencies and create a pull request](images/update.png)
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### Prerequisites
+
+Here are some things you need to do before you can get started.
+
+- go
+  - Ubuntu: `sudo apt-get install golang`
+  - Fedora: `sudo dnf install golang`
+  - Arch: `sudo pacman -S go`
+  - MacOS: `brew install go`
+### Installation
+
+1. Get a free API Key at [github.com](https://github.com/settings/tokens)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel.git
    ```
-3. Install NPM packages
+3. Install Go packages and
    ```sh
-   npm install
+    cd dyte-vit-2022-bhavyagoel
+    go get github.com/dyte-submissions/dyte-vit-2022-bhavyagoel
+    go build
+    go install
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. Run the app
+   ```sh
+     depmgmt -h
+   ```
+5. Create `config.json` file
+   ```json
+   {
+     "AUTH_TOKEN": "your_auth_token",
+     "TOKEN_USER": "your_token_user"
+   }
    ```
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+See the [open issues](https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -181,51 +214,42 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
+
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
+Distributed under the MIT License. See `LICENSE` for more information.
 
 
 <!-- CONTACT -->
+
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Your Name - [@GoelBhavya](https://twitter.com/GoelBhavya) - bgoel4132@gmail.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
+Project Link: [github.com/dyte-submissions/dyte-vit-2022-bhavyagoel](https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel)
 
 
 <!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
 
-* []()
-* []()
-* []()
+## Acknowledgments
+- [Bhavya Goel](https://github.com/bhavyagoel)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+
+[contributors-shield]: https://img.shields.io/github/contributors/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
+[contributors-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
+[forks-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/network/members
+[stars-shield]: https://img.shields.io/github/stars/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
+[stars-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/stargazers
+[issues-shield]: https://img.shields.io/github/issues/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
+[issues-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/issues
+[license-shield]: https://img.shields.io/github/license/dyte-submissions/dyte-vit-2022-bhavyagoel.svg?style=for-the-badge
+[license-url]: https://github.com/dyte-submissions/dyte-vit-2022-bhavyagoel/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
+[linkedin-url]: https://linkedin.com/in/bgoel4132
+[product-screenshot]: images/screenshot.png   
